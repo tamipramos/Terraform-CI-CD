@@ -6,7 +6,7 @@ Terraform is an open-source tool used to automate the creation, management, and 
 ## Beginner
 #### 1. Create AWS VPC with Terraform
 
-###### ~./main.tf~
+###### _./main.tf_
 ```python
 #VPC
 module "vpc" {
@@ -28,7 +28,7 @@ module "vpc" {
 }
 ```
 #### 2. Create EC2 with Terraform
-###### ~./main.tf~
+###### _./main.tf_
 ```python
 #Backend Server and DB
 resource "aws_instance" "BE_server" {
@@ -74,7 +74,7 @@ resource "aws_instance" "BE_server" {
 ```
 #### 3. Containerize three tier application (FE, BE, DB) with Docker
 
-###### ~./AWS/Dockerfiles/backend/BE.Dockerfile~
+###### _./AWS/Dockerfiles/backend/BE.Dockerfile_
 ```docker
 FROM python:3.12-slim
 WORKDIR /app
@@ -84,7 +84,7 @@ COPY . .
 EXPOSE 8000
 CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
 ```
-###### ~./AWS/Dockerfiles/frontend/FE.Dockerfile~
+###### _./AWS/Dockerfiles/frontend/FE.Dockerfile_
 ```docker
 FROM node:20-slim
 WORKDIR /app
@@ -96,7 +96,7 @@ RUN npm install -g serve
 EXPOSE 3000
 CMD ["serve", "-s", "build", "-l", "3000"]
 ```
-###### ~./AWS/Dockerfiles/database/DB.Dockerfile~
+###### _./AWS/Dockerfiles/database/DB.Dockerfile_
 ```docker
 FROM mongo:7.0
 EXPOSE 27017

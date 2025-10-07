@@ -1,0 +1,32 @@
+# Archivos sensibles
+.env
+*.key
+*.pem
+*.crt
+*.secret
+config/*.json
+
+# Archivos temporales
+__pycache__/
+*.pyc
+*.log
+*.tmp
+.dist/
+*.tfstate
+*.tfstate.*
+*.terraform.lock.*
+.terraform
+**/.terraform/*
+.terraformrc
+terraform.rc
+node_modules/
+
+
+# Dependencias
+node_modules/
+venv/
+.env/
+
+# Crash log files
+crash.log
+crash.*.log

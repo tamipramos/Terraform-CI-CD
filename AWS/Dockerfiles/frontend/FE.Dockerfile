@@ -1,15 +1,17 @@
-FROM node:20-slim
+FROM node:20
 
-WORKDIR /
+WORKDIR /app
 
-COPY AWS/Dockerfiles/frontend/package*.json /
+COPY . .
 
-COPY AWS/Dockerfiles/frontend/* /
+WORKDIR /app/vite-project
 
-RUN npm run build
+RUN npm install
 
 RUN npm install -g serve
 
+RUN npm run build
+
 EXPOSE 3000
 
-CMD ["serve", "-s", "build", "-l", "3000"]
+CMD ["serve", "-s", "dist", "-l", "3000"]

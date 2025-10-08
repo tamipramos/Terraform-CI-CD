@@ -104,6 +104,35 @@ ENV MONGO_INITDB_ROOT_USERNAME=admin
 ENV MONGO_INITDB_ROOT_PASSWORD=admin
 ```
 #### 4. Create simple GitHub Actions pipeline to build and push docker images to Docker Hub
+We will create 2 new Secrets in our GitHub:
+- DOCKERHUB_USERNAME
+- DOCKERHUB_TOKEN
+![Secrets](./images/secrets.png)
+Then assuming we created a ```.\.github\workflows``` folder, we will place inside the config files. (```docker-build.yml```)
+
+After that, we will set all the jobs we want to configure.
+
+###### _EXAMPLE_
+```yml
+  build-backend:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Build and push API image
+        uses: docker/build-push-action@v6
+        with:
+          context: ./AWS/Dockerfiles/backend
+          file: ./BE.Dockerfile
+          push: true
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/backend:latest
+```
 
 #### 5. Create simple GitHub Actions pipeline to deploy docker images to EC2
 

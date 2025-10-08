@@ -87,12 +87,9 @@ resource "aws_instance" "FE_server" {
   provisioner "remote-exec" {
     inline = [
       var.cmd_update,
-      var.cmd_nginx_install,
-
       var.cmd_docker_install,
       var.cmd_docker_compose_install,
       var.cmd_docker_permissions,
-      var.cmd_nginx_copyToDist,
       "cd /home/ubuntu/frontend && docker-compose up -d"
     ]
   }

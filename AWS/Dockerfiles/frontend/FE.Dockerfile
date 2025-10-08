@@ -2,7 +2,7 @@ FROM node:20 AS builder
 
 WORKDIR /app
 
-COPY ./nginx.conf /app/nginx.conf
+COPY AWS/Dockerfiles/frontend/nginx.conf /app/nginx.conf
 
 COPY ./vite-project/ ./vite-project
 

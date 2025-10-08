@@ -13,6 +13,8 @@ FROM node:20
 
 WORKDIR /app
 
+COPY nginx.conf .
+
 COPY --from=builder /app/vite-project/dist ./dist
 
 RUN npm install -g serve

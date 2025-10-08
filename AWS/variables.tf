@@ -70,6 +70,12 @@ variable "cmd_nginx_install" {
   default     = "sudo apt install nginx -y && sudo systemctl start nginx && sudo systemctl enable nginx"
 }
 
+variable "cmd_nginx_copyToDist" {
+  description = "Copy Nginx config to /etc/nginx/sites-available/default"
+  type        = string
+  default     = "sudo cp /app/nginx.conf /etc/nginx/sites-available/default && sudo systemctl restart nginx"
+}
+
 variable "cmd_git_install" {
   description = "Install Git"
   type        = string

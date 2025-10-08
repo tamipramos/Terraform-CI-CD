@@ -24,7 +24,10 @@ __pycache__/
 .terraformrc
 terraform.rc
 node_modules/
-
+*.log
+*.tmp
+*.bak
+*.swp
 
 # Dependencias
 node_modules/

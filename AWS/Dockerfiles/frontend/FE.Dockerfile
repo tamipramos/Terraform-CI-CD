@@ -4,6 +4,8 @@ WORKDIR /app
 
 COPY . .
 
+RUN npm install
+
 WORKDIR /app/vite-project
 
 RUN npm install

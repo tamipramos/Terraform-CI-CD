@@ -2,11 +2,11 @@ FROM node:20-slim
 
 WORKDIR /app
 
-COPY AWS\Dockerfiles\frontend\package*.json ./
+COPY AWS/Dockerfiles/frontend/package*.json ./
 
 RUN npm install
 
-COPY . .
+COPY AWS/Dockerfiles/frontend/* .
 
 RUN npm run build
 

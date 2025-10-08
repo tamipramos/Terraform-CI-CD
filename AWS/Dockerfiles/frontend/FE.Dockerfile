@@ -4,7 +4,7 @@ WORKDIR /app
 
 COPY AWS/Dockerfiles/frontend/nginx.conf /app/nginx.conf
 
-COPY ./vite-project/ ./vite-project
+COPY AWS/Dockerfiles/frontend/vite-project/ ./vite-project
 
 
 WORKDIR /app/vite-project

@@ -4,7 +4,7 @@ WORKDIR /app
 
 COPY ./vite-project/ ./vite-project
 
-COPY ./nginx.conf .
+COPY ./nginx.conf ./nginx.conf
 
 WORKDIR /app/vite-project
 

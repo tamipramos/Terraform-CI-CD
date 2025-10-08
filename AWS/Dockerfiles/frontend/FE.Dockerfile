@@ -13,7 +13,7 @@ FROM node:20
 
 WORKDIR /app
 
-COPY nginx.conf .
+COPY ./nginx.conf .
 
 COPY --from=builder /app/vite-project/dist ./dist
 

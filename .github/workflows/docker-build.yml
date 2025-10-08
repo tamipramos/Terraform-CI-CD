@@ -20,8 +20,8 @@ jobs:
       - name: Build and push API image
         uses: docker/build-push-action@v6
         with:
-          context: ./AWS/Dockerfiles/backend
-          file: ./BE.Dockerfile
+          context: .
+          file: ./AWS/Dockerfiles/backend/BE.Dockerfile
           push: true
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/backend:latest
 
@@ -39,8 +39,8 @@ jobs:
       - name: Build and push Web image
         uses: docker/build-push-action@v6
         with:
-          context: ./AWS/Dockerfiles/database
-          file: ./DB.Dockerfile
+          context: .
+          file: ./AWS/Dockerfiles/database/DB.Dockerfile
           push: true
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/database:latest
 
@@ -58,7 +58,7 @@ jobs:
       - name: Build and push Worker image
         uses: docker/build-push-action@v6
         with:
-          context: ./AWS/Dockerfiles/frontend
-          file: ./FE.Dockerfile
+          context: .
+          file: ./AWS/Dockerfiles/frontend/FE.Dockerfile
           push: true
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/frontend:latest

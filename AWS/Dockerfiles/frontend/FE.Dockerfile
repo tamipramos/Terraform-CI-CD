@@ -4,6 +4,8 @@ WORKDIR /app
 
 COPY ./vite-project/ ./vite-project
 
+COPY ./nginx.conf .
+
 WORKDIR /app/vite-project
 
 RUN npm install
@@ -13,13 +15,12 @@ FROM node:20
 
 WORKDIR /app
 
-COPY ./nginx.conf .
-
 COPY --from=builder /app/vite-project/dist ./dist
+COPY --from=builder /app/nginx.conf /etc/nginx/sites-available/default
 
 RUN npm install -g serve
 
 EXPOSE 3000
 EXPOSE 80
 
-CMD ["serve", "-s", "dist", "-l", "3000"]
+#CMD ["serve", "-s", "dist", "-l", "3000"]

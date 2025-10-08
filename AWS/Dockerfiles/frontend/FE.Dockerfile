@@ -1,12 +1,10 @@
 FROM node:20-slim
 
-WORKDIR /app
+WORKDIR /
 
-COPY AWS/Dockerfiles/frontend/package*.json ./
+COPY AWS/Dockerfiles/frontend/package*.json /
 
-RUN npm install
-
-COPY AWS/Dockerfiles/frontend/* .
+COPY AWS/Dockerfiles/frontend/* /
 
 RUN npm run build
 

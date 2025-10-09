@@ -1,3 +1,6 @@
+#TODO
+# Añadir pull de imagenes en los docker-compose
+
 # Region and provider
 provider "aws" {
   region = var.aws_region
@@ -12,7 +15,7 @@ data "aws_ami" "ubuntu" {
     name   = "name"
     values = [var.ami_name]
   }
-} 
+}
 
 data "aws_availability_zones" "available" {
   state = "available"
@@ -23,8 +26,8 @@ resource "aws_instance" "BE_server" {
   ami           = data.aws_ami.ubuntu.id
   instance_type = var.instance_type
 
-  vpc_security_group_ids = [ aws_security_group.default_security_group.id ]
-  subnet_id = module.vpc.private_subnets[0]
+  vpc_security_group_ids = [aws_security_group.default_security_group.id]
+  subnet_id              = module.vpc.private_subnets[0]
 
   tags = {
     Name = var.instance_name_BE
@@ -42,9 +45,9 @@ resource "aws_instance" "BE_server" {
 
   connection {
     type        = "ssh"
-    user       = "ubuntu"
+    user        = "ubuntu"
     private_key = file("~/.ssh/terraform-key")
-    host       = self.public_ip
+    host        = self.public_ip
   }
 
   provisioner "remote-exec" {
@@ -65,8 +68,8 @@ resource "aws_instance" "FE_server" {
   ami           = data.aws_ami.ubuntu.id
   instance_type = var.instance_type
 
-  vpc_security_group_ids = [ aws_security_group.default_security_group.id ]
-  subnet_id = module.vpc.private_subnets[0]
+  vpc_security_group_ids = [aws_security_group.default_security_group.id]
+  subnet_id              = module.vpc.private_subnets[0]
 
   tags = {
     Name = var.instance_name_FE
@@ -74,15 +77,16 @@ resource "aws_instance" "FE_server" {
 
   connection {
     type        = "ssh"
-    user       = "ubuntu"
+    user        = "ubuntu"
     private_key = file("~/.ssh/terraform-key")
-    host       = self.public_ip
+    host        = self.public_ip
   }
 
   provisioner "file" {
     source      = "../Dockerfiles/frontend/*"
     destination = "/home/ubuntu/frontend/"
   }
+
 
   provisioner "remote-exec" {
     inline = [
@@ -129,7 +133,7 @@ resource "aws_security_group" "default_security_group" {
     protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
   }
-  
+
   ingress {
     from_port   = 27017
     to_port     = 27017
@@ -156,17 +160,17 @@ resource "aws_key_pair" "terraform_key" {
 module "vpc" {
   source  = "terraform-aws-modules/vpc/aws"
   version = ">= 3.14.2"
-  name = "FEBEDB-VPC"
-  cidr = var.vpc_cidr
+  name    = "FEBEDB-VPC"
+  cidr    = var.vpc_cidr
 
   azs = data.aws_availability_zones.available.names
 
-  public_subnets = [cidrsubnet(var.vpc_cidr, 8, 0)]
+  public_subnets  = [cidrsubnet(var.vpc_cidr, 8, 0)]
   private_subnets = [cidrsubnet(var.vpc_cidr, 8, 1)]
 
   enable_dns_hostnames = true
-  enable_dns_support = true
-  enable_nat_gateway = true
-  single_nat_gateway = true
+  enable_dns_support   = true
+  enable_nat_gateway   = true
+  single_nat_gateway   = true
 
 }

@@ -2,14 +2,10 @@ version: "3.9"
 
 services:
   backend:
-    build:
-      context: .
-      dockerfile: backend/BE.Dockerfile
+    image: saurio96/backend
     container_name: backend
     ports:
       - "5000:5000"
-    env_file:
-      - ./backend/.env
     volumes:
       - ./backend:/
     depends_on:
@@ -17,10 +13,7 @@ services:
     restart: always
 
   db:
-    build:
-      context: .
-      dockerfile: database/DB.Dockerfile
-    image: mongo:7
+    image: saurio96/database
     container_name: mongo
     restart: always
     ports:

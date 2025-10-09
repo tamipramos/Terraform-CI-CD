@@ -62,3 +62,65 @@ jobs:
           file: ./AWS/Dockerfiles/frontend/FE.Dockerfile
           push: true
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/frontend:latest
+
+  terraform:
+    name: Apply Terraform
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: 1.9.8
+
+      - name: Terraform Init
+        run: terraform -chdir=AWS/terraform init
+
+      - name: Terraform Apply
+        run: terraform -chdir=AWS/terraform apply -auto-approve
+
+      - name: Get EC2 IP from outputs
+        id: tf_output
+        run: |
+          IP=$(terraform -chdir=AWS/terraform output -raw instance_IP_FE)
+          echo "EC2_IP_FE=$IP" >> $GITHUB_ENV
+          IP=$(terraform -chdir=AWS/terraform output -raw instance_IP_BE)
+          echo "EC2_IP_BE=$IP" >> $GITHUB_ENV
+
+  deploy-to-ec2-FE:
+    name: 🚀 Deploy to EC2
+    runs-on: ubuntu-latest
+    needs: [terraform, build-backend, build-database, build-frontend]
+
+    steps:
+      - name: Connect and deploy to EC2
+        uses: appleboy/ssh-action@v1.1.0
+        with:
+          host: ${{ env.EC2_IP_FE }}
+          username: ubuntu
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: |
+            cd /home/ubuntu/app
+            docker compose pull
+            docker compose up -d --remove-orphans
+            docker image prune -f
+
+  deploy-to-ec2-BE:
+    name: 🚀 Deploy to EC2
+    runs-on: ubuntu-latest
+    needs: [terraform, build-backend, build-database, build-frontend]
+
+    steps:
+      - name: Connect and deploy to EC2
+        uses: appleboy/ssh-action@v1.1.0
+        with:
+          host: ${{ env.EC2_IP_BE }}
+          username: ubuntu
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: |
+            mkdir -p /home/ubuntu/app
+            cd /home/ubuntu/app
+            docker compose pull
+            docker compose up -d --remove-orphans
+            docker image prune -f

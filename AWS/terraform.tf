@@ -1,8 +1,8 @@
 terraform {
-  cloud  {
+  cloud {
     organization = "Tamipramos"
     workspaces {
-      name = "Terraform-Challenge"
+      name    = "Terraform-Challenge"
       project = "Terraform-Challenge"
     }
   }

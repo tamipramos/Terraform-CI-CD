@@ -49,7 +49,7 @@ variable "cmd_docker_install" {
 variable "cmd_docker_compose_install" {
   description = "Install Docker Compose"
   type        = string
-  default     = "sudo curl -L \"https://github.com/docker/compose/releases/download/1.29.2/docker-compose-$(uname -s)-$(uname -m)\" -o /usr/local/bin/docker-compose && sudo chmod +x /usr/local/bin/docker-compose" 
+  default     = "sudo curl -L \"https://github.com/docker/compose/releases/download/1.29.2/docker-compose-$(uname -s)-$(uname -m)\" -o /usr/local/bin/docker-compose && sudo chmod +x /usr/local/bin/docker-compose"
 }
 
 variable "cmd_docker_permissions" {
@@ -91,11 +91,23 @@ variable "db_username" {
 variable "db_password" {
   description = "Database Password"
   type        = string
-  sensitive = true
+  sensitive   = true
 }
 
 variable "db_init_table" {
   description = "Database Initialization Table"
   type        = string
   default     = "CREATE TABLE IF NOT EXISTS users (id SERIAL PRIMARY KEY, name VARCHAR(100), email VARCHAR(100));"
+}
+
+variable "download_repo_BE" {
+  description = "GitHub Repository Backend"
+  type        = string
+  default     = "git clone --no-checkout https://github.com/tamipramos/Terraform-CI-CD.git && cd Terraform-CI-CD && git sparse-checkout init --cone && git sparse-checkout set AWS/Dockerfiles/backend-docker-compose.yml && git checkout main"
+}
+
+variable "download_repo_FE" {
+  description = "GitHub Repository Frontend"
+  type        = string
+  default     = "git clone --no-checkout https://github.com/tamipramos/Terraform-CI-CD.git && cd Terraform-CI-CD && git sparse-checkout init --cone && git sparse-checkout set AWS/Dockerfiles/frontend-docker-compose.yml && git checkout main"
 }

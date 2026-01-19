@@ -135,8 +135,3 @@ After that, we will set all the jobs we want to configure.
 ```
 
 #### 5. Create simple GitHub Actions pipeline to deploy docker images to EC2
-
-## Advanced:
-#### 1. Store Terraform state on S3
-#### 2. Write docker-compose for three tier app
-#### 3. Automate Terraform plan and apply with GitHub Actions

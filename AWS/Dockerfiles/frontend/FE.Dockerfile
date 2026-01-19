@@ -1,11 +1,11 @@
 FROM node:20 AS builder
 WORKDIR /app
 
-COPY ./vite-project/package*.json ./vite-project/
+COPY vite-project/package*.json ./vite-project/
 WORKDIR /app/vite-project
 RUN npm ci
 
-COPY ./vite-project/ .
+COPY vite-project/ .
 RUN npm run build
 
 

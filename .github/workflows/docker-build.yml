@@ -77,6 +77,17 @@ jobs:
       - name: Set Terraform Cloud token
         run: echo "TF_API_TOKEN=${{ secrets.TF_TOKEN }}" >> $GITHUB_ENV
         
+      - name: Set Terraform Cloud token
+        run: echo "TF_CLI_CONFIG_FILE=$HOME/.terraformrc" >> $GITHUB_ENV
+        
+      - name: Auth TF 
+        run: |
+              mkdir -p $HOME
+              cat <<EOF > $HOME/.terraformrc
+              credentials "app.terraform.io" {
+                token = "${{ secrets.TF_TOKEN }}"
+              }
+              EOF
       - name: Terraform Init
         run: terraform -chdir=AWS/ init
 

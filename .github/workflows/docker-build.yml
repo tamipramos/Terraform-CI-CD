@@ -73,12 +73,15 @@ jobs:
         uses: hashicorp/setup-terraform@v3
         with:
           terraform_version: 1.9.8
-
+          
+      - name: Set Terraform Cloud token
+        run: echo "TF_API_TOKEN=${{ secrets.TF_TOKEN }}" >> $GITHUB_ENV
+        
       - name: Terraform Init
-        run: terraform -chdir=AWS/. init
+        run: terraform -chdir=AWS/ init
 
       - name: Terraform Apply
-        run: terraform -chdir=AWS/. apply -auto-approve
+        run: terraform -chdir=AWS/ apply -auto-approve
 
       - name: Get EC2 IP from outputs
         id: tf_output

@@ -1,30 +1,19 @@
 FROM node:20 AS builder
-
 WORKDIR /app
 
-COPY ./frontend/nginx.conf /app/nginx.conf
-
-COPY ./frontend/vite-project/ ./vite-project
-
-
+COPY frontend/vite-project/package*.json ./vite-project/
 WORKDIR /app/vite-project
+RUN npm ci
 
-RUN npm install
+COPY frontend/vite-project/ .
 RUN npm run build
 
-FROM node:20
 
-WORKDIR /app
+FROM nginx:alpine
+RUN rm /etc/nginx/conf.d/default.conf
 
-RUN apt-get update && apt-get install -y nginx
-
-COPY --from=builder /app/vite-project/dist ./dist
-RUN rm -r /etc/nginx/sites-available/default
-COPY --from=builder /app/nginx.conf /etc/nginx/sites-available/default
-RUN nginx -t
-
-RUN npm install -g serve
+COPY frontend/nginx.conf /etc/nginx/conf.d/default.conf
+COPY --from=builder /app/vite-project/dist /usr/share/nginx/html
 
 EXPOSE 80
-
 CMD ["nginx", "-g", "daemon off;"]

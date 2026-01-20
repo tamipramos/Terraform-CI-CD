@@ -72,6 +72,11 @@ resource "aws_security_group" "default_security_group" {
   }
 }
 
+resource "local_file" "private_key_pem" {
+  content         = tls_private_key.terraform.private_key_pem
+  filename        = "${path.module}/terraform-key.pem"
+  file_permission = "0600"
+}
 
 resource "aws_instance" "BE_server" {
   ami           = data.aws_ami.ubuntu.id

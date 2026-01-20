@@ -103,8 +103,14 @@ jobs:
               BE_IP=$(terraform -chdir=AWS output -raw instance_IP_BE)
               echo "fe_ip=$FE_IP" >> $GITHUB_OUTPUT
               echo "be_ip=$BE_IP" >> $GITHUB_OUTPUT
-              PRIVATE_KEY=$(terraform -chdir=AWS output -raw private_key_openssh)
+
+              # CAMBIO IMPORTANTE: Usamos 'private_key' (PEM), NO 'private_key_openssh'
+              PRIVATE_KEY=$(terraform -chdir=AWS output -raw private_key)
+              
+              # Enmascarar la clave por seguridad
               echo "::add-mask::$PRIVATE_KEY"
+
+              # DESCOMENTAR ESTO PARA QUE FUNCIONE
               echo "private_key<<EOF" >> $GITHUB_OUTPUT
               echo "$PRIVATE_KEY" >> $GITHUB_OUTPUT
               echo "EOF" >> $GITHUB_OUTPUT

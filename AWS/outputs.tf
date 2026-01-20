@@ -8,8 +8,8 @@ output "instance_IP_FE" {
   value       = aws_instance.FE_server.private_ip
 }
 
-output "application_endpoint" {
-  value       = aws_lb.app.dns_name
-  description = "Public entrypoint of the application"
-}
+#output "application_endpoint" {
+#  value       = aws_lb.app.dns_name
+#  description = "Public entrypoint of the application"
+#}
 

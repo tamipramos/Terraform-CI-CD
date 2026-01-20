@@ -74,7 +74,16 @@ jobs:
       - uses: actions/checkout@v4
 
       - uses: hashicorp/setup-terraform@v3
-
+      
+      - name: Configure Terraform Cloud credentials
+        run: |
+          mkdir -p $HOME
+          cat <<EOF > $HOME/.terraformrc
+          credentials "app.terraform.io" {
+            token = "${{ secrets.TF_TOKEN }}"
+          }
+          EOF
+          
       - name: Terraform Init
         run: terraform -chdir=AWS/ init
 

@@ -118,6 +118,7 @@ jobs:
             uses: appleboy/scp-action@v0.1.7
             with:
               host: ${{ needs.terraform.outputs.fe_ip }}
+              context: .
               username: ubuntu
               key: ${{ needs.terraform.outputs.aws_key }}
               source: "AWS/Dockerfiles/frontend-docker-compose.yml"
@@ -141,6 +142,7 @@ jobs:
           - name: Copy docker-compose file to server
             uses: appleboy/scp-action@v0.1.7
             with:
+              context: .
               host: ${{ needs.terraform.outputs.fe_ip }}
               username: ubuntu
               key: ${{ needs.terraform.outputs.aws_key }}

@@ -69,16 +69,12 @@ jobs:
     outputs:
       fe_ip: ${{ steps.outputs.outputs.fe_ip }}
       be_ip: ${{ steps.outputs.outputs.be_ip }}
-
+      
     steps:
       - uses: actions/checkout@v4
 
       - uses: hashicorp/setup-terraform@v3
       
-      - name: Set SSH env
-        run: |
-              echo "$BE_IP" >> $GITHUB_ENV
-              echo "$PRIVATE_KEY" >> $GITHUB_ENV
       - name: Configure Terraform Cloud credentials
         run: |
           mkdir -p $HOME
@@ -91,6 +87,11 @@ jobs:
       - name: Terraform Init
         run: terraform -chdir=AWS/ init
 
+      - name: Set SSH env
+        run: |
+              echo "$BE_IP" >> $GITHUB_ENV
+              echo "$PRIVATE_KEY" >> $GITHUB_ENV
+              
       - name: Terraform Apply
         run: terraform -chdir=AWS/ apply -auto-approve
 
@@ -100,6 +101,9 @@ jobs:
           echo "fe_ip=$(terraform -chdir=AWS output -raw instance_IP_FE)" >> $GITHUB_OUTPUT
           echo "be_ip=$(terraform -chdir=AWS output -raw instance_IP_BE)" >> $GITHUB_OUTPUT
           echo "private_key=$(terraform -chdir=AWS output -raw private_key)" >> $GITHUB_OUTPUT
+          terraform -chdir=AWS output -raw private_key > private_key.pem
+          echo "PRIVATE_KEY=$(cat private_key.pem)" >> $GITHUB_ENV
+     
 
   deploy-to-ec2-FE:
     runs-on: ubuntu-latest

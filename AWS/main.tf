@@ -46,7 +46,7 @@ resource "aws_instance" "BE_server" {
   connection {
     type        = "ssh"
     user        = "ubuntu"
-    private_key = file("~/.ssh/terraform-key")
+    private_key = aws_key_pair.terraform_key.key_name
     host        = self.public_ip
   }
 
@@ -78,7 +78,7 @@ resource "aws_instance" "FE_server" {
   connection {
     type        = "ssh"
     user        = "ubuntu"
-    private_key = file("~/.ssh/terraform-key")
+    private_key = aws_key_pair.terraform_key.key_name
     host        = self.public_ip
   }
 
@@ -151,9 +151,19 @@ resource "aws_security_group" "default_security_group" {
 }
 
 #Key Pair
+#resource "aws_key_pair" "terraform_key" {
+#  key_name   = "terraform-key"
+#  public_key = file("~/.ssh/terraform-key.pub")
+#}
+
+resource "tls_private_key" "terraform" {
+  algorithm = "RSA"
+  rsa_bits  = 4096
+}
+
 resource "aws_key_pair" "terraform_key" {
   key_name   = "terraform-key"
-  public_key = file("~/.ssh/terraform-key.pub")
+  public_key = tls_private_key.terraform.public_key_openssh
 }
 
 #VPC

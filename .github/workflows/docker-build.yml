@@ -98,12 +98,16 @@ jobs:
       - name: Read outputs
         id: outputs
         run: |
-          echo "fe_ip=$(terraform -chdir=AWS output -raw instance_IP_FE)" >> $GITHUB_OUTPUT
-          echo "be_ip=$(terraform -chdir=AWS output -raw instance_IP_BE)" >> $GITHUB_OUTPUT
-          echo "private_key=$(terraform -chdir=AWS output -raw private_key)" >> $GITHUB_OUTPUT
-          terraform -chdir=AWS output -raw private_key > private_key.pem
-          echo "PRIVATE_KEY=$(cat private_key.pem)" >> $GITHUB_ENV
-     
+              FE_IP=$(terraform -chdir=AWS output -raw instance_IP_FE)
+              BE_IP=$(terraform -chdir=AWS output -raw instance_IP_BE)
+              echo "fe_ip=$FE_IP" >> $GITHUB_OUTPUT
+              echo "be_ip=$BE_IP" >> $GITHUB_OUTPUT
+              terraform -chdir=AWS output -raw private_key > private_key.pem
+              chmod 600 private_key.pem
+              echo "PRIVATE_KEY<<EOF" >> $GITHUB_ENV
+              cat private_key.pem >> $GITHUB_ENV
+              echo "EOF" >> $GITHUB_ENV
+               
 
   deploy-to-ec2-FE:
     runs-on: ubuntu-latest

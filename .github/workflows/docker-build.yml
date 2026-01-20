@@ -119,7 +119,7 @@ jobs:
           with:
             host: ${{ needs.terraform.outputs.fe_ip }}
             username: ubuntu
-            key: ${{ needs.terraform.outputs.private_key }}
+            key_path: "./terraform-key.pem"
             script: |
               cd /home/ubuntu/app
               docker compose pull
@@ -134,7 +134,7 @@ jobs:
           with:
             host: ${{ needs.terraform.outputs.be_ip }}
             username: ubuntu
-            key: ${{ needs.terraform.outputs.private_key }}
+            key_path: "./terraform-key.pem"
             script: |
               cd /home/ubuntu/app
               docker compose pull

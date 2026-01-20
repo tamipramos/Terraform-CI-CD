@@ -69,7 +69,7 @@ jobs:
     outputs:
       fe_ip: ${{ steps.outputs.outputs.fe_ip }}
       be_ip: ${{ steps.outputs.outputs.be_ip }}
-      private_key: ${{ steps.outputs.outputs.private_key_openssh }}
+      private_key: ${{ steps.outputs.outputs.private_key }}
       
     steps:
       - uses: actions/checkout@v4
@@ -103,11 +103,11 @@ jobs:
               BE_IP=$(terraform -chdir=AWS output -raw instance_IP_BE)
               echo "fe_ip=$FE_IP" >> $GITHUB_OUTPUT
               echo "be_ip=$BE_IP" >> $GITHUB_OUTPUT
-              terraform -chdir=AWS output -raw private_key > private_key.pem
-              chmod 600 private_key.pem
-              echo "PRIVATE_KEY<<EOF" >> $GITHUB_ENV
-              cat private_key.pem >> $GITHUB_ENV
-              echo "EOF" >> $GITHUB_ENV
+              PRIVATE_KEY=$(terraform -chdir=AWS output -raw private_key)
+              echo "::add-mask::$PRIVATE_KEY"
+              echo "private_key<<EOF" >> $GITHUB_OUTPUT
+              echo "$PRIVATE_KEY" >> $GITHUB_OUTPUT
+              echo "EOF" >> $GITHUB_OUTPUT
 
                
 

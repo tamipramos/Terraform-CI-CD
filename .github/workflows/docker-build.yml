@@ -99,6 +99,7 @@ jobs:
         run: |
           echo "fe_ip=$(terraform -chdir=AWS output -raw instance_IP_FE)" >> $GITHUB_OUTPUT
           echo "be_ip=$(terraform -chdir=AWS output -raw instance_IP_BE)" >> $GITHUB_OUTPUT
+          echo "private_key=$(terraform -chdir=AWS output -raw private_key)" >> $GITHUB_OUTPUT
 
   deploy-to-ec2-FE:
     runs-on: ubuntu-latest
@@ -109,7 +110,7 @@ jobs:
         with:
           host: ${{ needs.terraform.outputs.fe_ip }}
           username: ubuntu
-          key: ${{ env.PRIVATE_KEY }}
+          key: ${{ needs.terraform.outputs.private_key }}
           script: |
             cd /home/ubuntu/app
             docker compose pull
@@ -124,7 +125,7 @@ jobs:
         with:
           host: ${{ needs.terraform.outputs.be_ip }}
           username: ubuntu
-          key: ${{ env.PRIVATE_KEY }}
+          key: ${{ needs.terraform.outputs.private_key }}
           script: |
             cd /home/ubuntu/app
             docker compose pull

@@ -120,7 +120,7 @@ jobs:
               host: ${{ needs.terraform.outputs.fe_ip }}
               username: ubuntu
               key: ${{ needs.terraform.outputs.aws_key }}
-              source: "./AWS/Dockerfiles/frontend-docker-compose.yml"
+              source: "./Dockerfiles/frontend-docker-compose.yml"
               target: "/home/ubuntu/app"
               
           - uses: appleboy/ssh-action@v1.0.3
@@ -145,7 +145,7 @@ jobs:
               host: ${{ needs.terraform.outputs.fe_ip }}
               username: ubuntu
               key: ${{ needs.terraform.outputs.aws_key }}
-              source: "./AWS/Dockerfiles/backend-docker-compose.yml"
+              source: "./Dockerfiles/backend-docker-compose.yml"
               target: "/home/ubuntu/app"
               
           - uses: appleboy/ssh-action@v1.0.3

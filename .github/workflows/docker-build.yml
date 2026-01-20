@@ -69,6 +69,7 @@ jobs:
     outputs:
       fe_ip: ${{ steps.outputs.outputs.fe_ip }}
       be_ip: ${{ steps.outputs.outputs.be_ip }}
+      private_key: ${{ steps.outputs.outputs.private_key }}
       
     steps:
       - uses: actions/checkout@v4
@@ -107,7 +108,7 @@ jobs:
               echo "PRIVATE_KEY<<EOF" >> $GITHUB_ENV
               $(cat private_key.pem) >> $GITHUB_ENV
               echo "EOF" >> $GITHUB_ENV
-              echo 
+
                
 
   deploy-to-ec2-FE:
@@ -119,7 +120,7 @@ jobs:
         with:
           host: ${{ needs.terraform.outputs.fe_ip }}
           username: ubuntu
-          key: ${{ env.PRIVATE_KEY }}
+          key: ${{ needs.terraform.outputs.private_key }}
           script: |
             cd /home/ubuntu/app
             docker compose pull
@@ -134,7 +135,7 @@ jobs:
         with:
           host: ${{ needs.terraform.outputs.be_ip }}
           username: ubuntu
-          key: ${{ env.PRIVATE_KEY }}
+          key: ${{ needs.terraform.outputs.private_key }}
           script: |
             cd /home/ubuntu/app
             docker compose pull

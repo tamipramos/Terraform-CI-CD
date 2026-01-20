@@ -68,9 +68,9 @@ jobs:
       runs-on: ubuntu-latest
       # 1. SALIDAS: Definimos qué variables salen de este job
       outputs:
-        fe_ip: ${{ steps.extraer.outputs.fe_ip }}
-        be_ip: ${{ steps.extraer.outputs.be_ip }}
-        aws_key: ${{ steps.extraer.outputs.aws_key }} # <--- La clave saldrá por aquí
+        fe_ip: ${{ steps.outputs.outputs.fe_ip }}
+        be_ip: ${{ steps.outputs.outputs.be_ip }}
+        aws_key: ${{ steps.outputs.outputs.aws_key }} # <--- La clave saldrá por aquí
         
       steps:
         - uses: actions/checkout@v4
@@ -95,7 +95,7 @@ jobs:
           run: terraform -chdir=AWS/ apply -auto-approve
   
         - name: Read outputs
-          id: extraer  # <--- ID importante
+          id: outputs
           run: |
                 # Capturar IPs
                 FE_IP=$(terraform -chdir=AWS output -raw instance_IP_FE)
@@ -118,10 +118,9 @@ jobs:
             uses: appleboy/scp-action@v0.1.7
             with:
               host: ${{ needs.terraform.outputs.fe_ip }}
-              context: .
               username: ubuntu
               key: ${{ needs.terraform.outputs.aws_key }}
-              source: "AWS/Dockerfiles/frontend-docker-compose.yml"
+              source: "./AWS/Dockerfiles/frontend-docker-compose.yml"
               target: "/home/ubuntu/app"
               
           - uses: appleboy/ssh-action@v1.0.3
@@ -130,6 +129,7 @@ jobs:
               username: ubuntu
               key: ${{ needs.terraform.outputs.aws_key }}
               script: |
+                sudo chown ubuntu:ubuntu /home/ubuntu/app 
                 cd /home/ubuntu/app
                 docker-compose pull
                 docker-compose up -d --remove-orphans
@@ -142,11 +142,10 @@ jobs:
           - name: Copy docker-compose file to server
             uses: appleboy/scp-action@v0.1.7
             with:
-              context: .
               host: ${{ needs.terraform.outputs.fe_ip }}
               username: ubuntu
               key: ${{ needs.terraform.outputs.aws_key }}
-              source: "AWS/Dockerfiles/backend-docker-compose.yml"
+              source: "./AWS/Dockerfiles/backend-docker-compose.yml"
               target: "/home/ubuntu/app"
               
           - uses: appleboy/ssh-action@v1.0.3
@@ -155,6 +154,7 @@ jobs:
               username: ubuntu
               key: ${{ needs.terraform.outputs.aws_key }}
               script: |
+                sudo chown ubuntu:ubuntu /home/ubuntu/app 
                 cd /home/ubuntu/app
                 docker-compose pull
                 docker-compose up -d --remove-orphans

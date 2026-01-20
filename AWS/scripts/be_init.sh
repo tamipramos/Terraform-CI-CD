@@ -1,20 +1,18 @@
 #!/bin/bash
-set -e
+# Update OS
+sudo apt-get update -y
+sudo apt-get upgrade -y
 
-apt update -y
-apt install -y docker.io docker-compose
+# Install Docker & Docker Compose
+sudo apt-get install -y docker.io
+sudo curl -L "https://github.com/docker/compose/releases/download/v2.18.1/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+sudo chmod +x /usr/local/bin/docker-compose
 
-systemctl enable docker
-systemctl start docker
-usermod -aG docker ubuntu
+# Add ubuntu to docker group
+sudo usermod -aG docker ubuntu
 
-mkdir -p /opt/backend
-mkdir -p /opt/database
-
-cd /opt/backend
-docker-compose pull
-docker-compose up -d
-
-cd /opt/database
-docker-compose pull
-docker-compose up -d
+# Create app folder and run docker-compose
+mkdir -p /home/ubuntu/app
+cd /home/ubuntu/app
+docker compose pull
+docker compose up -d --remove-orphans

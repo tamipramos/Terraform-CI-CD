@@ -75,6 +75,10 @@ jobs:
 
       - uses: hashicorp/setup-terraform@v3
       
+      - name: Set SSH env
+        run: |
+              echo "$BE_IP" >> $GITHUB_ENV
+              echo "$PRIVATE_KEY" >> $GITHUB_ENV
       - name: Configure Terraform Cloud credentials
         run: |
           mkdir -p $HOME
@@ -105,7 +109,7 @@ jobs:
         with:
           host: ${{ needs.terraform.outputs.fe_ip }}
           username: ubuntu
-          key: ${{ secrets.EC2_SSH_KEY }}
+          key: ${{ env.PRIVATE_KEY }}
           script: |
             cd /home/ubuntu/app
             docker compose pull
@@ -120,7 +124,7 @@ jobs:
         with:
           host: ${{ needs.terraform.outputs.be_ip }}
           username: ubuntu
-          key: ${{ secrets.EC2_SSH_KEY }}
+          key: ${{ env.PRIVATE_KEY }}
           script: |
             cd /home/ubuntu/app
             docker compose pull

@@ -105,8 +105,9 @@ jobs:
               terraform -chdir=AWS output -raw private_key > private_key.pem
               chmod 600 private_key.pem
               echo "PRIVATE_KEY<<EOF" >> $GITHUB_ENV
-              cat private_key.pem >> $GITHUB_ENV
+              $(cat private_key.pem) >> $GITHUB_ENV
               echo "EOF" >> $GITHUB_ENV
+              echo 
                
 
   deploy-to-ec2-FE:
@@ -118,7 +119,7 @@ jobs:
         with:
           host: ${{ needs.terraform.outputs.fe_ip }}
           username: ubuntu
-          key: ${{ needs.terraform.outputs.private_key }}
+          key: ${{ env.PRIVATE_KEY }}
           script: |
             cd /home/ubuntu/app
             docker compose pull
@@ -133,7 +134,7 @@ jobs:
         with:
           host: ${{ needs.terraform.outputs.be_ip }}
           username: ubuntu
-          key: ${{ needs.terraform.outputs.private_key }}
+          key: ${{ env.PRIVATE_KEY }}
           script: |
             cd /home/ubuntu/app
             docker compose pull

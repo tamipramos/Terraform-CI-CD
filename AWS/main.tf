@@ -76,7 +76,7 @@ resource "aws_security_group" "default_security_group" {
 resource "aws_instance" "BE_server" {
   ami           = data.aws_ami.ubuntu.id
   instance_type = var.instance_type
-
+  associate_public_ip_address = true
   subnet_id              = module.vpc.private_subnets[0]
   vpc_security_group_ids = [aws_security_group.default_security_group.id]
   key_name               = aws_key_pair.terraform_key.key_name
@@ -91,7 +91,7 @@ resource "aws_instance" "BE_server" {
 resource "aws_instance" "FE_server" {
   ami           = data.aws_ami.ubuntu.id
   instance_type = var.instance_type
-
+  associate_public_ip_address = true
   subnet_id              = module.vpc.private_subnets[0]
   vpc_security_group_ids = [aws_security_group.default_security_group.id]
   key_name               = aws_key_pair.terraform_key.key_name

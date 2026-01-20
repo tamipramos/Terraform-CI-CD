@@ -123,6 +123,8 @@ jobs:
               # 2. CORRECCIÓN: Usamos 'key' (texto) y la variable que sacamos arriba
               key: ${{ needs.terraform.outputs.aws_key }}
               script: |
+                sudo apt-get update
+                sudo apt-get install -y docker-compose-plugin
                 cd /home/ubuntu/app
                 docker-compose pull
                 docker-compose up -d --remove-orphans
@@ -138,6 +140,8 @@ jobs:
               # 2. CORRECCIÓN: Usamos 'key' (texto) y la variable que sacamos arriba
               key: ${{ needs.terraform.outputs.aws_key }}
               script: |
+                sudo apt-get update
+                sudo apt-get install -y docker-compose-plugin
                 cd /home/ubuntu/app
                 docker-compose pull
                 docker-compose up -d --remove-orphans

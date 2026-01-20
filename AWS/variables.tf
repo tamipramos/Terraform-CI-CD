@@ -88,12 +88,6 @@ variable "db_username" {
   default     = "admin"
 }
 
-variable "db_password" {
-  description = "Database Password"
-  type        = string
-  sensitive   = true
-}
-
 variable "db_init_table" {
   description = "Database Initialization Table"
   type        = string

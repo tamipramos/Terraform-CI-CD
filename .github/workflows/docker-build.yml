@@ -124,8 +124,8 @@ jobs:
               key: ${{ needs.terraform.outputs.aws_key }}
               script: |
                 cd /home/ubuntu/app
-                docker compose pull
-                docker compose up -d --remove-orphans
+                docker-compose pull
+                docker-compose up -d --remove-orphans
      
   deploy-to-ec2-BE:
         runs-on: ubuntu-latest
@@ -139,5 +139,5 @@ jobs:
               key: ${{ needs.terraform.outputs.aws_key }}
               script: |
                 cd /home/ubuntu/app
-                docker compose pull
-                docker compose up -d --remove-orphans
+                docker-compose pull
+                docker-compose up -d --remove-orphans

@@ -66,75 +66,53 @@ jobs:
   terraform:
     name: Apply Terraform
     runs-on: ubuntu-latest
+    outputs:
+      fe_ip: ${{ steps.outputs.outputs.fe_ip }}
+      be_ip: ${{ steps.outputs.outputs.be_ip }}
+
     steps:
       - uses: actions/checkout@v4
 
-      - name: Set up Terraform
-        uses: hashicorp/setup-terraform@v3
-        with:
-          terraform_version: 1.9.8
-          
-      - name: Set Terraform Cloud token
-        run: echo "TF_API_TOKEN=${{ secrets.TF_TOKEN }}" >> $GITHUB_ENV
-        
-      - name: Set Terraform Cloud token
-        run: echo "TF_CLI_CONFIG_FILE=$HOME/.terraformrc" >> $GITHUB_ENV
-        
-      - name: Auth TF 
-        run: |
-              mkdir -p $HOME
-              cat <<EOF > $HOME/.terraformrc
-              credentials "app.terraform.io" {
-                token = "${{ secrets.TF_TOKEN }}"
-              }
-              EOF
+      - uses: hashicorp/setup-terraform@v3
+
       - name: Terraform Init
         run: terraform -chdir=AWS/ init
 
       - name: Terraform Apply
         run: terraform -chdir=AWS/ apply -auto-approve
 
-      - name: Get EC2 IP from outputs
-        id: tf_output
+      - name: Read outputs
+        id: outputs
         run: |
-          IP=$(terraform -chdir=AWS/. output -raw instance_IP_FE)
-          echo "EC2_IP_FE=$IP" >> $GITHUB_ENV
-          IP=$(terraform -chdir=AWS/. output -raw instance_IP_BE)
-          echo "EC2_IP_BE=$IP" >> $GITHUB_ENV
+          echo "fe_ip=$(terraform -chdir=AWS output -raw instance_IP_FE)" >> $GITHUB_OUTPUT
+          echo "be_ip=$(terraform -chdir=AWS output -raw instance_IP_BE)" >> $GITHUB_OUTPUT
 
   deploy-to-ec2-FE:
-    name: 🚀 Deploy to EC2
     runs-on: ubuntu-latest
-    needs: [terraform, build-backend, build-database, build-frontend]
+    needs: terraform
 
     steps:
-      - name: Connect and deploy to EC2
-        uses: appleboy/ssh-action@v1.1.0
+      - uses: appleboy/ssh-action@v1.1.0
         with:
-          host: ${{ env.EC2_IP_FE }}
+          host: ${{ needs.terraform.outputs.fe_ip }}
           username: ubuntu
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
             cd /home/ubuntu/app
             docker compose pull
             docker compose up -d --remove-orphans
-            docker image prune -f
 
   deploy-to-ec2-BE:
-    name: 🚀 Deploy to EC2
     runs-on: ubuntu-latest
-    needs: [terraform, build-backend, build-database, build-frontend]
+    needs: terraform
 
     steps:
-      - name: Connect and deploy to EC2
-        uses: appleboy/ssh-action@v1.1.0
+      - uses: appleboy/ssh-action@v1.1.0
         with:
-          host: ${{ env.EC2_IP_BE }}
+          host: ${{ needs.terraform.outputs.be_ip }}
           username: ubuntu
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
-            mkdir -p /home/ubuntu/app
             cd /home/ubuntu/app
             docker compose pull
             docker compose up -d --remove-orphans
-            docker image prune -f

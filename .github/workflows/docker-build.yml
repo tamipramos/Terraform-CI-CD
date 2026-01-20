@@ -122,7 +122,7 @@ jobs:
       needs: terraform
   
       steps:
-        - uses: appleboy/ssh-action@v1.1.0
+        - uses: appleboy/ssh-action@v1
           with:
             host: ${{ needs.terraform.outputs.fe_ip }}
             username: ubuntu
@@ -137,7 +137,7 @@ jobs:
       needs: terraform
   
       steps:
-        - uses: appleboy/ssh-action@v1.1.0
+        - uses: appleboy/ssh-action@v1
           with:
             host: ${{ needs.terraform.outputs.be_ip }}
             username: ubuntu

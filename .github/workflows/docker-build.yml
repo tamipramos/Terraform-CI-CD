@@ -69,7 +69,7 @@ jobs:
     outputs:
       fe_ip: ${{ steps.outputs.outputs.fe_ip }}
       be_ip: ${{ steps.outputs.outputs.be_ip }}
-      private_key: ${{ steps.outputs.outputs.private_key }}
+      private_key: ${{ steps.outputs.outputs.private_key_openssh }}
       
     steps:
       - uses: actions/checkout@v4
@@ -104,12 +104,12 @@ jobs:
               echo "fe_ip=$FE_IP" >> $GITHUB_OUTPUT
               echo "be_ip=$BE_IP" >> $GITHUB_OUTPUT
               PRIVATE_KEY=$(terraform -chdir=AWS output -raw private_key)
-              echo "::add-mask::$PRIVATE_KEY"
+              echo $PRIVATE_KEY >> env.PRIVATE_KEY
               echo "private_key<<EOF" >> $GITHUB_OUTPUT
               echo "$PRIVATE_KEY" >> $GITHUB_OUTPUT
               echo "EOF" >> $GITHUB_OUTPUT
 
-               
+              
 
   deploy-to-ec2-FE:
     runs-on: ubuntu-latest
@@ -120,7 +120,7 @@ jobs:
         with:
           host: ${{ needs.terraform.outputs.fe_ip }}
           username: ubuntu
-          key: ${{ needs.terraform.outputs.private_key }}
+          key: ${{ env.PRIVATE_KEY }}
           script: |
             cd /home/ubuntu/app
             docker compose pull
@@ -135,7 +135,7 @@ jobs:
         with:
           host: ${{ needs.terraform.outputs.be_ip }}
           username: ubuntu
-          key: ${{ needs.terraform.outputs.private_key }}
+          key: ${{ env.PRIVATE_KEY }}
           script: |
             cd /home/ubuntu/app
             docker compose pull
